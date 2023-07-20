@@ -7,8 +7,9 @@ const validator = (schema) => (payload) =>
 const todoSchema = Joi.object({
     title:Joi.string(),
     description:Joi.string().min(3),
-    date:Joi.date(),
-    id:Joi.string()
+    date:Joi.string(),
+    id:Joi.string(),
+    isCompleted:Joi.boolean()
 })
 
 export const todoUpdatevalidator = validator(todoSchema);

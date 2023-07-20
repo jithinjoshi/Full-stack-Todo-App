@@ -20,7 +20,7 @@ export const signup = (async (req, res) => {
                 password: hash
             });
 
-            newUser.save();
+           await newUser.save();
         }
 
     } catch (error) {
@@ -32,12 +32,12 @@ export const login = async (req, res) => {
     try {
         const { error, value } = validateSignin(req.body);
         if (error) {
-            res.status(422).json(error.details[0]?.message)
+          return  res.status(422).json(error.details[0]?.message)
         } else {
             const user = await User.findOne({ email: value?.email });
 
             if (!user) {
-                res.status(401).json({ error: 'unauthorized' });
+              return  res.status(401).json({ error: 'unauthorized' });
             }
 
             const match = await bcrypt.compare(value?.password, user?.password);

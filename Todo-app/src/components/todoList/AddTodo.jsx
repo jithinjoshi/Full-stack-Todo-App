@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { createTodo } from '../../api/endpoints';
+import React, { useEffect, useState } from 'react';
+import { createTodo, deleteTodo, getTodos, updateTodo } from '../../api/endpoints';
 import TodoItems from './TodoItems';
+
 
 
 const AddTodo = () => {
@@ -9,6 +10,14 @@ const AddTodo = () => {
     const [description, setDescription] = useState('');
     const today = new Date();
     const formattedDate = today.toDateString();
+
+    const [todos, setTodos] = useState([]);
+    useEffect(() => {
+        getTodos().then((data) => {
+            setTodos(data?.data)
+            console.log(data)
+        })
+    }, []);
 
     const handleAddTodoToggle = () => {
         setAddingTodo(!addingTodo);
@@ -31,6 +40,42 @@ const AddTodo = () => {
             .then((result) => {
                 console.log(result);
                 resetForm();
+
+                getTodos().then((data) => {
+                    setTodos(data?.data)
+                    console.log(data)
+                    setAddingTodo(false);
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const handleEdit = (id, editedTitle, editedDescription) => {
+        updateTodo({id:id, title: editedTitle, description: editedDescription })
+            .then((result) => {
+                console.log(result)
+                const updatedTodos = todos.map((todo) => {
+                    if (todo._id === id) {
+                        return { ...todo, title: editedTitle, description: editedDescription };
+                    }
+                    return todo;
+                });
+                setTodos(updatedTodos);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const handleDelete = (id) => {
+        console.log(id)
+        deleteTodo(id)
+            .then((result) => {
+                console.log(result)
+                const updatedTodos = todos.filter((todo) => todo._id !== id);
+                setTodos(updatedTodos);
             })
             .catch((err) => {
                 console.log(err);
@@ -39,59 +84,59 @@ const AddTodo = () => {
 
     return (
         <>
-    <div className="flex flex-col w-full bg-white">
-      <div className="py-4 px-6 border-b">
-        <h4 className="text-lg font-semibold">Today</h4>
-      </div>
-      <div className="flex-grow p-6">
-        {!addingTodo && (
-          <button
-            className="p-2 bg-green-500 text-white rounded-md mb-4"
-            onClick={handleAddTodoToggle}
-          >
-            + New Task
-          </button>
-        )}
-        {addingTodo && (
-          <div className="w-3/5 mx-auto">
-            <form onSubmit={submitHandler}>
-              <input
-                type="text"
-                placeholder="Enter title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
-              />
-              <textarea
-                placeholder="Enter description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md resize-none h-40 focus:outline-none focus:ring focus:ring-blue-500"
-              ></textarea>
-              <div className="flex justify-end mt-4">
-                <button
-                  className="px-4 py-2 mr-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none"
-                  onClick={handleAddTodoToggle}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
-                >
-                  Add Todo
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+            <div className="flex flex-col w-full bg-white">
+                <div className="py-4 px-6 border-b">
+                    <h4 className="text-lg font-semibold">Todos</h4>
+                </div>
+                <div className="flex-grow p-6">
+                    {!addingTodo && (
+                        <button
+                            className="p-2 bg-green-500 text-white rounded-md mb-4"
+                            onClick={handleAddTodoToggle}
+                        >
+                            + New Task
+                        </button>
+                    )}
+                    {addingTodo && (
+                        <div className="w-3/5 mx-auto">
+                            <form onSubmit={submitHandler}>
+                                <input
+                                    type="text"
+                                    placeholder="Enter title"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+                                />
+                                <textarea
+                                    placeholder="Enter description"
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    className="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md resize-none h-40 focus:outline-none focus:ring focus:ring-blue-500"
+                                ></textarea>
+                                <div className="flex justify-end mt-4">
+                                    <button
+                                        className="px-4 py-2 mr-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none"
+                                        onClick={handleAddTodoToggle}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+                                    >
+                                        Add Todo
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    )}
 
-        {/* Todo List */}
-        <TodoItems/>
-        
-      </div>
-    </div>
-  </>
+                    {/* Todo List */}
+                    <TodoItems todos={todos} setTodos={setTodos} handleEdit={handleEdit} handleDelete={handleDelete} />
+
+                </div>
+            </div>
+        </>
     );
 };
 
