@@ -4,7 +4,7 @@ import { verifyJWT } from '../middleware/verifyJwt.js';
 
 
 const router = express.Router();
-router.use(verifyJWT)
+// router.use(verifyJWT)
 
 router.route('/create-todos').post(controller.createTodo);
 router.route('/todos').get(controller.getTodos);
