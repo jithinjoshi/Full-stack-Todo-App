@@ -9,6 +9,8 @@ const TodoItems = ({ todos, setTodos, handleEdit, handleDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
+    console.log(todos)
+
     useEffect(() => {
         fetchTodos(currentPage);
     }, [currentPage]);
@@ -16,6 +18,7 @@ const TodoItems = ({ todos, setTodos, handleEdit, handleDelete }) => {
     const fetchTodos = (page) => {
         getTodos(page, 10)
             .then((response) => {
+                console.log(response.data)
                 const { docs, totalDocs } = response.data;
                 setTodos(docs);
                 setTotalPages(Math.ceil(totalDocs / 10));
@@ -66,16 +69,16 @@ const TodoItems = ({ todos, setTodos, handleEdit, handleDelete }) => {
         updateTodo(credentials).then((data) => {
             console.log(data);
             getTodos().then((data) => {
-                setTodos(data?.data);
+                setTodos(data?.data?.docs);
             });
         });
     };
 
     return (
         <div className="mt-8">
-            {todos?.docs?.map((todo) => (
+            {todos?.map((todo) => (
                 <div
-                    key={todo.id}
+                    key={todo._id}
                     className="flex items-center p-4 border border-gray-300 rounded-md mb-4"
                 >
 
@@ -139,7 +142,6 @@ const TodoItems = ({ todos, setTodos, handleEdit, handleDelete }) => {
                 </div>
             ))}
             
-            {todos?.docs?.length > 5 && (
                 <div className="flex justify-center mt-4">
                     <button
                         className="px-4 py-2 mr-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none"
@@ -167,7 +169,6 @@ const TodoItems = ({ todos, setTodos, handleEdit, handleDelete }) => {
                         </button>
                     )}
                 </div>
-            )}
             
         </div >
     );

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { createTodo, deleteTodo, getTodos, updateTodo } from '../../api/endpoints';
 import TodoItems from './TodoItems';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const AddTodo = () => {
@@ -14,8 +17,7 @@ const AddTodo = () => {
     const [todos, setTodos] = useState([]);
     useEffect(() => {
         getTodos().then((data) => {
-            setTodos(data?.data)
-            console.log(data)
+            setTodos(data?.data?.docs)
         })
     }, []);
 
@@ -42,29 +44,35 @@ const AddTodo = () => {
                 resetForm();
 
                 getTodos().then((data) => {
-                    setTodos(data?.data)
+                    setTodos(data?.data?.docs)
                     console.log(data)
                     setAddingTodo(false);
+                    toast.success('Todo added successfully!');
                 })
             })
             .catch((err) => {
                 console.log(err);
+                toast.error('Failed to add todo. Please try again.');
             });
     };
 
     const handleEdit = (id, editedTitle, editedDescription) => {
-        updateTodo({id:id, title: editedTitle, description: editedDescription })
+        updateTodo({ id: id, title: editedTitle, description: editedDescription })
             .then((result) => {
                 console.log(result)
-                const updatedTodos = todos.map((todo) => {
+                const updatedTodos = todos?.map((todo) => {
                     if (todo._id === id) {
                         return { ...todo, title: editedTitle, description: editedDescription };
                     }
                     return todo;
                 });
+
+                console.log(updatedTodos)
                 setTodos(updatedTodos);
+                toast.success('Todo updated successfully!');
             })
             .catch((err) => {
+                toast.error('Failed to update todo. Please try again.');
                 console.log(err);
             });
     };
@@ -76,8 +84,10 @@ const AddTodo = () => {
                 console.log(result)
                 const updatedTodos = todos.filter((todo) => todo._id !== id);
                 setTodos(updatedTodos);
+                toast.success('Todo deleted successfully!');
             })
             .catch((err) => {
+                toast.error('Failed to delete todo. Please try again.');
                 console.log(err);
             });
     };
@@ -85,6 +95,7 @@ const AddTodo = () => {
     return (
         <>
             <div className="flex flex-col w-full bg-white">
+                <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
                 <div className="py-4 px-6 border-b">
                     <h4 className="text-lg font-semibold">Todos</h4>
                 </div>
