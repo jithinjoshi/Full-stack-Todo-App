@@ -1,14 +1,14 @@
 // SharedLayout.js
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/appSlice";
-import { logoutUser, searchTodo } from "../../api/endpoints";
+import { logoutUser} from "../../api/endpoints";
 
 const SharedLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredTodos, setFilteredTodos] = useState([]);
+
 
   const accessToken = useSelector((state) => state?.app?.accessToken);
   const dispatch = useDispatch();
@@ -40,7 +40,7 @@ const SharedLayout = ({ children }) => {
       {/* Navbar */}
       <nav className="bg-red-500 px-6 py-3 flex items-center justify-between">
         <div className="text-lg font-semibold text-white">Todo App</div>
-        <div className="relative">
+        {/* <div className="relative">
           <input
             type="text"
             value={searchQuery}
@@ -53,7 +53,7 @@ const SharedLayout = ({ children }) => {
           >
             Search
           </button>
-        </div>
+        </div> */}
         <div className="flex items-center">
           {sidebarOpen ? (
             <button
@@ -133,8 +133,6 @@ const SharedLayout = ({ children }) => {
             </ul>
           </div>
         </div>
-
-        {/* Main Content */}
         <div className="flex flex-col w-full">{children}</div>
       </div>
     </div>

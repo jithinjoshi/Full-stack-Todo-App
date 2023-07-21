@@ -35,9 +35,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/incompleted',
-    element:<ProtectedRoute><SharedLayout><InclompletedTask /></SharedLayout></ProtectedRoute>,
+    element: <ProtectedRoute><SharedLayout><InclompletedTask /></SharedLayout></ProtectedRoute>,
     errorElement: <ErrorPage />
   }
+
+
 
 ])
 
@@ -49,11 +51,16 @@ function App() {
   useEffect(() => {
     (async () => {
       dispatch(setLoading(true))
-      const {
-        data: { accessToken },
-      } = await authApi.get("auth/refresh");
-      dispatch(addAccessTokenToken(accessToken));
-      dispatch(setLoading(false))
+      try {
+        const {
+          data: { accessToken },
+        } = await authApi.get("auth/refresh");
+        dispatch(addAccessTokenToken(accessToken));
+      } catch (error) {
+        // 
+      } finally {
+        dispatch(setLoading(false))
+      }
     })();
   }, [token]);
 

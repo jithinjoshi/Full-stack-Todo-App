@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useSelector } from "react-redux"
 import { Navigate, useLocation } from "react-router-dom"
 
 
 const ProtectedRoute = ({ children }) => {
     const accessToken = useSelector((state) => state?.app?.accessToken);
-    const setLoading = useSelector((state) => state.app.isLoading);
+    const isLoading = useSelector((state) => state.app.isLoading);
 
-    let location = useLocation(); 
- 
+    let location = useLocation();
 
-    if (!accessToken && !setLoading) {
+    console.log(accessToken, isLoading)
+
+    if (!accessToken && !isLoading) {
         return <Navigate to="/signin" state={{ from: location }} replace />
     }
     return <>{children}</>

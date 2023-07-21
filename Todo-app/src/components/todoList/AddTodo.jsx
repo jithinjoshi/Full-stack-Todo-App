@@ -14,6 +14,7 @@ const AddTodo = () => {
     const today = new Date();
     const formattedDate = today.toDateString();
 
+
     const [todos, setTodos] = useState([]);
     useEffect(() => {
         getTodos().then((data) => {
@@ -32,50 +33,78 @@ const AddTodo = () => {
 
     const submitHandler = (e) => {
         e.preventDefault();
+        // Validation
+        if (!title.trim()) {
+          toast.error('Title is required.');
+          return;
+        } else if (title.trim().length < 1) {
+          toast.error('Title must contain at least 1 non-whitespace character.');
+          return;
+        } 
+      
+        if (description.trim().length < 3) {
+          toast.error('Description must contain at least 3 characters.');
+          return;
+        }
+      
         const credentials = {
-            title,
-            description,
-            date: formattedDate,
+          title,
+          description,
+          date: formattedDate,
         };
-
+      
         createTodo(credentials)
-            .then((result) => {
-                console.log(result);
-                resetForm();
-
-                getTodos().then((data) => {
-                    setTodos(data?.data?.docs)
-                    console.log(data)
-                    setAddingTodo(false);
-                    toast.success('Todo added successfully!');
-                })
-            })
-            .catch((err) => {
-                console.log(err);
-                toast.error('Failed to add todo. Please try again.');
+          .then((result) => {
+            console.log(result);
+            resetForm();
+      
+            getTodos().then((data) => {
+              setTodos(data?.data?.docs);
+              console.log(data);
+              setAddingTodo(false);
+              toast.success('Todo added successfully!');
             });
-    };
-
-    const handleEdit = (id, editedTitle, editedDescription) => {
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error('Failed to add todo. Please try again.');
+          });
+      };
+      
+      const handleEdit = (id, editedTitle, editedDescription) => {
+        // Validation
+        if (!editedTitle.trim()) {
+          toast.error('Title is required.');
+          return;
+        } else if (editedTitle.trim().length < 1) {
+          toast.error('Title must contain at least 1 non-whitespace character.');
+          return;
+        }
+      
+        if (editedDescription.trim().length < 3) {
+          toast.error('Description must contain at least 3 characters.');
+          return;
+        }
+      
         updateTodo({ id: id, title: editedTitle, description: editedDescription })
-            .then((result) => {
-                console.log(result)
-                const updatedTodos = todos?.map((todo) => {
-                    if (todo._id === id) {
-                        return { ...todo, title: editedTitle, description: editedDescription };
-                    }
-                    return todo;
-                });
-
-                console.log(updatedTodos)
-                setTodos(updatedTodos);
-                toast.success('Todo updated successfully!');
-            })
-            .catch((err) => {
-                toast.error('Failed to update todo. Please try again.');
-                console.log(err);
+          .then((result) => {
+            console.log(result);
+            const updatedTodos = todos?.map((todo) => {
+              if (todo._id === id) {
+                return { ...todo, title: editedTitle, description: editedDescription };
+              }
+              return todo;
             });
-    };
+      
+            console.log(updatedTodos);
+            setTodos(updatedTodos);
+            toast.success('Todo updated successfully!');
+          })
+          .catch((err) => {
+            toast.error('Failed to update todo. Please try again.');
+            console.log(err);
+          });
+      };
 
     const handleDelete = (id) => {
         console.log(id)

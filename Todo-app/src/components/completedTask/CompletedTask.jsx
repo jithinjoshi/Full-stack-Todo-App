@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { completedTasks, deleteTodo } from '../../api/endpoints';
 import {FiTrash} from 'react-icons/fi';
 import Nodata from '../Nodata';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CompletedTask = () => {
     const [tasks, setTasks] = useState([]);
@@ -24,9 +26,11 @@ const CompletedTask = () => {
                 console.log(result)
                 const updatedTodos = tasks.filter((todo) => todo._id !== id);
                 setTasks(updatedTodos);
+                toast.success('Todo deleted successfully!');
             })
             .catch((err) => {
                 console.log(err);
+                toast.error('Failed to delete todo. Please try again.');
             });
     };
 
@@ -35,6 +39,7 @@ const CompletedTask = () => {
 
     return (
         <div className="mt-8">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
             <h2 className='text-xl m-2'>Completed Tasks</h2>
             {
                 tasks?.length > 0 ?
