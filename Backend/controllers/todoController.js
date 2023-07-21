@@ -16,6 +16,7 @@ export const getTodos = (async (req, res) => {
             limit: parseInt(limit, 10),
         };
       
+    
         const todos = await Todo.paginate({ userId: user, isCompleted: false }, options);
         res.status(200).json(todos);
 
