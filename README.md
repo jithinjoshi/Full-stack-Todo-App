@@ -1,6 +1,6 @@
 # MERN Stack Todo Application
 
-This is a Todo Application built using the MERN stack (MongoDB, Express.js, React.js, and Node.js). The application allows users to manage their tasks by adding, updating, and deleting them. The front-end is implemented using React.js for a user-friendly interface, and the back-end is built with Node.js and Express.js. MongoDB is used as the database to store tasks.
+This is a Todo Application built using the MERN stack (MongoDB, Express.js, React.js, and Node.js). The application allows users to manage their tasks by adding, updating, and deleting them. The front end is implemented using React.js for a user-friendly interface, and the back end is built with Node.js and Express.js. MongoDB is used as the database to store tasks.
 
 ## Live Demo
 
@@ -43,7 +43,7 @@ npm install
 npm run dev
 ```
 
-The application will be accessible at `http://localhost:3000`.
+The application will be accessible at `http://localhost:7000`.
 
 ## RESTful APIs
 
